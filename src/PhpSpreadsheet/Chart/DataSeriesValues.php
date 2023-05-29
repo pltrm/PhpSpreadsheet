@@ -74,6 +74,13 @@ class DataSeriesValues
     private $lineWidth = 12700;
 
     /**
+     * Marker Siz.
+     *
+     * @var int
+     */
+    private $markerSiz = 3;
+
+    /**
      * Create a new DataSeriesValues object.
      *
      * @param string $dataType
@@ -83,6 +90,7 @@ class DataSeriesValues
      * @param mixed $dataValues
      * @param null|mixed $marker
      * @param null|string|string[] $fillColor
+     * @throws Exception
      */
     public function __construct($dataType = self::DATASERIES_TYPE_NUMBER, $dataSource = null, $formatCode = null, $pointCount = 0, $dataValues = [], $marker = null, $fillColor = null)
     {
@@ -117,7 +125,7 @@ class DataSeriesValues
      *
      * @return $this
      */
-    public function setDataType($dataType)
+    public function setDataType($dataType): DataSeriesValues
     {
         if (!in_array($dataType, self::$dataTypeValues)) {
             throw new Exception('Invalid datatype for chart data series values');
@@ -273,10 +281,34 @@ class DataSeriesValues
      *
      * @return $this
      */
-    public function setLineWidth($width)
+    public function setLineWidth($width): DataSeriesValues
     {
         $minWidth = 12700;
         $this->lineWidth = max($minWidth, $width);
+
+        return $this;
+    }
+
+    /**
+     * Get marker size for series.
+     *
+     * @return int
+     */
+    public function getMarkerSize(): int
+    {
+        return $this->markerSiz;
+    }
+
+    /**
+     * Set marker size for the series.
+     *
+     * @param int $markerSize
+     *
+     * @return $this
+     */
+    public function setMarkerSize(int $markerSize): self
+    {
+        $this->markerSiz = $markerSize;
 
         return $this;
     }

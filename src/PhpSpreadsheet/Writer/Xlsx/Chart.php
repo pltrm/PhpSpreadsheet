@@ -1023,11 +1023,7 @@ class Chart extends WriterPart
         $objWriter->endElement();
 
         $objWriter->startElement('c:spPr');
-        $objWriter->startElement('a:solidFill');
-        $objWriter->startElement('a:srgbClr');
-        $objWriter->writeAttribute('val', $fillColor);
-        $objWriter->endElement();
-        $objWriter->endElement();
+        $this->writeSolidFill($objWriter, $fillColor);
         $objWriter->endElement();
         $objWriter->endElement();
 
@@ -1090,11 +1086,7 @@ class Chart extends WriterPart
                 $fillColor = $plotLabel->getFillColor();
                 if ($fillColor !== null && !is_array($fillColor)) {
                     $objWriter->startElement('c:spPr');
-                    $objWriter->startElement('a:solidFill');
-                    $objWriter->startElement('a:srgbClr');
-                    $objWriter->writeAttribute('val', $fillColor);
-                    $objWriter->endElement();
-                    $objWriter->endElement();
+                    $this->writeSolidFill($objWriter, $fillColor);
                     $objWriter->endElement();
                 }
             }
@@ -1109,6 +1101,13 @@ class Chart extends WriterPart
 
             //    Values
             $plotSeriesValues = $plotGroup->getPlotValuesByIndex($plotSeriesRef);
+            $fillColor = $plotSeriesValues->getFillColor();
+
+            if ($fillColor !== null && !is_array($fillColor) && $groupType == DataSeries::TYPE_BARCHART) {
+                $objWriter->startElement('c:spPr');
+                $this->writeSolidFill($objWriter, $fillColor);
+                $objWriter->endElement();
+            }
 
             if (($groupType == DataSeries::TYPE_PIECHART) || ($groupType == DataSeries::TYPE_PIECHART_3D) || ($groupType == DataSeries::TYPE_DONUTCHART)) {
                 $fillColorValues = $plotSeriesValues->getFillColor();
@@ -1132,7 +1131,11 @@ class Chart extends WriterPart
             }
 
             //    Formatting for the points
-            if (($groupType == DataSeries::TYPE_LINECHART) || ($groupType == DataSeries::TYPE_STOCKCHART)) {
+            if (
+                ($groupType == DataSeries::TYPE_LINECHART)
+                || ($groupType == DataSeries::TYPE_STOCKCHART)
+                || ($groupType == DataSeries::TYPE_RADARCHART)
+            ) {
                 $plotLineWidth = 12700;
                 if ($plotSeriesValues) {
                     $plotLineWidth = $plotSeriesValues->getLineWidth();
@@ -1145,12 +1148,17 @@ class Chart extends WriterPart
                     $objWriter->startElement('a:noFill');
                     $objWriter->endElement();
                 }
+
+                if ($fillColor !== null && !is_array($fillColor)) {
+                    $this->writeSolidFill($objWriter, $fillColor);
+                }
                 $objWriter->endElement();
                 $objWriter->endElement();
             }
 
             if ($plotSeriesValues) {
                 $plotSeriesMarker = $plotSeriesValues->getPointMarker();
+                $markerSize = $plotSeriesValues->getMarkerSize();
                 if ($plotSeriesMarker) {
                     $objWriter->startElement('c:marker');
                     $objWriter->startElement('c:symbol');
@@ -1159,7 +1167,16 @@ class Chart extends WriterPart
 
                     if ($plotSeriesMarker !== 'none') {
                         $objWriter->startElement('c:size');
-                        $objWriter->writeAttribute('val', 3);
+                        $objWriter->writeAttribute('val', $markerSize);
+                        $objWriter->endElement();
+                    }
+
+                    if ($fillColor !== null && !is_array($fillColor) && $groupType == DataSeries::TYPE_RADARCHART) {
+                        $objWriter->startElement('c:spPr');
+                        $this->writeSolidFill($objWriter, $fillColor);
+                        $objWriter->startElement('a:ln');
+                        $this->writeSolidFill($objWriter, $fillColor);
+                        $objWriter->endElement();
                         $objWriter->endElement();
                     }
 
@@ -1167,7 +1184,11 @@ class Chart extends WriterPart
                 }
             }
 
-            if (($groupType === DataSeries::TYPE_BARCHART) || ($groupType === DataSeries::TYPE_BARCHART_3D) || ($groupType === DataSeries::TYPE_BUBBLECHART)) {
+            if (
+                ($groupType === DataSeries::TYPE_BARCHART)
+                || ($groupType === DataSeries::TYPE_BARCHART_3D)
+                || ($groupType === DataSeries::TYPE_BUBBLECHART)
+            ) {
                 $objWriter->startElement('c:invertIfNegative');
                 $objWriter->writeAttribute('val', 0);
                 $objWriter->endElement();
@@ -1514,6 +1535,20 @@ class Chart extends WriterPart
         $objWriter->writeAttribute('orientation', 'portrait');
         $objWriter->endElement();
 
+        $objWriter->endElement();
+    }
+
+    /**
+     * Write Solid Fill Settings, chart color.
+     *
+     * @param XMLWriter $objWriter XML Writer
+     */
+    private function writeSolidFill(XMLWriter $objWriter, string $fillColor): void
+    {
+        $objWriter->startElement('a:solidFill');
+        $objWriter->startElement('a:srgbClr');
+        $objWriter->writeAttribute('val', $fillColor);
+        $objWriter->endElement();
         $objWriter->endElement();
     }
 }
