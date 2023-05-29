@@ -14,7 +14,7 @@
     "config": {
         "sort-packages": true
     },
-    "homepage": "https://github.com/PHPOffice/PhpSpreadsheet",
+    "homepage": "https://github.com/pltrm/PhpSpreadsheet",
     "type": "library",
     "license": "MIT",
     "authors": [
