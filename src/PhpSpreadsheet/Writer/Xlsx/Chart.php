@@ -462,6 +462,28 @@ class Chart extends WriterPart
         $objWriter->writeAttribute('val', $yAxis->getAxisOptionsProperty('axis_labels'));
         $objWriter->endElement();
 
+        if ($yAxis->isAxisHide()) {
+            $objWriter->startElement('c:spPr');
+            $objWriter->startElement('a:ln');
+            $objWriter->startElement('a:noFill');
+            $objWriter->endElement();
+            $objWriter->endElement();
+            $objWriter->endElement();
+        }
+
+        if (!$yAxis->isAxisHide() && (!is_null($yAxis->getAxisWidth()) || !is_null($yAxis->getAxisColor()))) {
+            $objWriter->startElement('c:spPr');
+            $objWriter->startElement('a:ln');
+            $objWriter->writeAttribute('w', is_null($yAxis->getAxisWidth()) ? 9525 : $yAxis->getAxisWidth());
+            $this->writeSolidFill($objWriter, is_null($yAxis->getAxisColor()) ? '868686' : $yAxis->getAxisColor());
+            $objWriter->endElement();
+            $objWriter->endElement();
+        }
+
+        if (!is_null($yAxis->getAxisValueColor()) || !is_null($yAxis->getAxisValueSize())) {
+            $this->AxisValue($objWriter, $yAxis->getAxisValueColor(), $yAxis->getAxisValueSize());
+        }
+
         if ($id2 > 0) {
             $objWriter->startElement('c:crossAx');
             $objWriter->writeAttribute('val', $id2);
@@ -483,6 +505,12 @@ class Chart extends WriterPart
         $objWriter->startElement('c:lblOffset');
         $objWriter->writeAttribute('val', 100);
         $objWriter->endElement();
+
+        if ($yAxis->getAxisTickLblSkip()) {
+            $objWriter->startElement('c:tickLblSkip');
+            $objWriter->writeAttribute('val', $yAxis->getAxisTickLblSkip());
+            $objWriter->endElement();
+        }
 
         if ($isMultiLevelSeries) {
             $objWriter->startElement('c:noMultiLvlLbl');
@@ -840,6 +868,11 @@ class Chart extends WriterPart
             $objWriter->endElement();
         }
 
+        if ($xAxis->isAxisHide()) {
+            $objWriter->startElement('a:noFill');
+            $objWriter->endElement();
+        }
+
         $objWriter->startElement('a:prstDash');
         $objWriter->writeAttribute('val', $xAxis->getLineStyleProperty('dash'));
         $objWriter->endElement();
@@ -931,6 +964,10 @@ class Chart extends WriterPart
 
         $objWriter->endElement(); //effectList
         $objWriter->endElement(); //end spPr
+
+        if (!is_null($xAxis->getAxisValueColor()) || !is_null($xAxis->getAxisValueSize())) {
+            $this->AxisValue($objWriter, $xAxis->getAxisValueColor(), $xAxis->getAxisValueSize());
+        }
 
         if ($id1 > 0) {
             $objWriter->startElement('c:crossAx');
@@ -1171,7 +1208,14 @@ class Chart extends WriterPart
                         $objWriter->endElement();
                     }
 
-                    if ($fillColor !== null && !is_array($fillColor) && $groupType == DataSeries::TYPE_RADARCHART) {
+                    if (
+                        $fillColor !== null
+                        && !is_array($fillColor)
+                        && (
+                            $groupType == DataSeries::TYPE_RADARCHART
+                            || $groupType == DataSeries::TYPE_LINECHART
+                        )
+                    ) {
                         $objWriter->startElement('c:spPr');
                         $this->writeSolidFill($objWriter, $fillColor);
                         $objWriter->startElement('a:ln');
@@ -1232,6 +1276,12 @@ class Chart extends WriterPart
 
                 $this->writePlotSeriesValues($plotSeriesValues, $objWriter, $groupType, 'num');
                 $objWriter->endElement();
+                if ($groupType === DataSeries::TYPE_LINECHART && $plotGroup) {
+                    //    Line only, Line3D can't be smoothed
+                    $objWriter->startElement('c:smooth');
+                    $objWriter->writeAttribute('val', (int) $plotGroup->getSmoothLine());
+                    $objWriter->endElement();
+                }
             }
 
             if ($groupType === DataSeries::TYPE_BUBBLECHART) {
@@ -1549,6 +1599,32 @@ class Chart extends WriterPart
         $objWriter->startElement('a:srgbClr');
         $objWriter->writeAttribute('val', $fillColor);
         $objWriter->endElement();
+        $objWriter->endElement();
+    }
+
+    private function AxisValue(XMLWriter $objWriter, ?string $color, ?int $size)
+    {
+        $objWriter->startElement('c:txPr');
+
+        $objWriter->startElement('a:bodyPr');
+        $objWriter->endElement();
+
+        $objWriter->startElement('a:lstStyle');
+        $objWriter->endElement();
+
+        $objWriter->startElement('a:p');
+        $objWriter->startElement('a:pPr');
+        $objWriter->startElement('a:defRPr');
+        $objWriter->writeAttribute('sz', !is_null($size) ? $size : 1000);
+        $objWriter->startElement('a:solidFill');
+        $objWriter->startElement('a:srgbClr');
+        $objWriter->writeAttribute('val', !is_null($color) ? $color : '000000');
+        $objWriter->endElement();
+        $objWriter->endElement();
+        $objWriter->endElement();
+        $objWriter->endElement();
+        $objWriter->endElement();
+
         $objWriter->endElement();
     }
 }
