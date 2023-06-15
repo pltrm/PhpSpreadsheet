@@ -227,7 +227,6 @@ class StringTable extends WriterPart
             // Size
             if ($element->getFont()->getSize()) {
                 $objWriter->writeAttribute('sz', $element->getFont()->getSize() * 100);
-                var_dump($element->getFont()->getSize());die;
             }
             // Underline
             $underlineType = $element->getFont()->getUnderline();
