@@ -48,6 +48,12 @@ class Legend
      */
     private $layout;
 
+    /** @var string|null */
+    private $fontColor = null;
+
+    /** @var int|null */
+    private $fontSize = null;
+
     /**
      * Create a new Legend.
      *
@@ -145,5 +151,41 @@ class Legend
     public function getLayout()
     {
         return $this->layout;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFontColor(): ?string
+    {
+        return $this->fontColor;
+    }
+
+    /**
+     * @param string|null $fontColor
+     * @return self
+     */
+    public function setFontColor(?string $fontColor): self
+    {
+        $this->fontColor = $fontColor;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFontSize(): ?int
+    {
+        return $this->fontSize;
+    }
+
+    /**
+     * @param int|null $fontSize
+     * @return self
+     */
+    public function setFontSize(?int $fontSize): self
+    {
+        $this->fontSize = $fontSize;
+        return $this;
     }
 }

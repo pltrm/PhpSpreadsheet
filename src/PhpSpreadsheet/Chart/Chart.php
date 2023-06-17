@@ -141,6 +141,13 @@ class Chart
     private $bottomRightYOffset = 10;
 
     /**
+     * hole size
+     *
+     * @var int
+     */
+    private $holeSize = 50;
+
+    /**
      * Create a new Chart.
      *
      * @param mixed $name
@@ -659,5 +666,24 @@ class Chart
         $renderer = new $libraryName($this);
 
         return $renderer->render($outputDestination);
+    }
+
+    /**
+     * @return int
+     */
+    public function getHoleSize(): int
+    {
+        return $this->holeSize;
+    }
+
+    /**
+     * @param int $holeSize
+     * @return self
+     */
+    public function setHoleSize(int $holeSize): self
+    {
+        $this->holeSize = $holeSize;
+
+        return $this;
     }
 }

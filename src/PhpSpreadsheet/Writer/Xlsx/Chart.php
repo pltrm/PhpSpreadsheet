@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
 use PhpOffice\PhpSpreadsheet\Chart\Title;
 use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
 use PhpOffice\PhpSpreadsheet\Shared\XMLWriter;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Writer\Exception as WriterException;
 
 class Chart extends WriterPart
@@ -75,7 +76,7 @@ class Chart extends WriterPart
         $objWriter->writeAttribute('val', 0);
         $objWriter->endElement();
 
-        $this->writePlotArea($objWriter, $pChart->getWorksheet(), $pChart->getPlotArea(), $pChart->getXAxisLabel(), $pChart->getYAxisLabel(), $pChart->getChartAxisX(), $pChart->getChartAxisY(), $pChart->getMajorGridlines(), $pChart->getMinorGridlines());
+        $this->writePlotArea($objWriter, $pChart->getWorksheet(), $pChart->getPlotArea(), $pChart->getXAxisLabel(), $pChart->getYAxisLabel(), $pChart->getChartAxisX(), $pChart->getChartAxisY(), $pChart->getMajorGridlines(), $pChart->getMinorGridlines(), $pChart->getHoleSize());
 
         $this->writeLegend($objWriter, $pChart->getLegend());
 
@@ -180,6 +181,16 @@ class Chart extends WriterPart
         $objWriter->writeAttribute('rtl', 0);
 
         $objWriter->startElement('a:defRPr');
+        if ($legend->getFontSize()) {
+            $objWriter->writeAttribute('sz', $legend->getFontSize());
+        }
+        if ($legend->getFontColor()) {
+            $objWriter->startElement('a:solidFill');
+            $objWriter->startElement('a:srgbClr');
+            $objWriter->writeAttribute('val', $legend->getFontColor());
+            $objWriter->endElement();
+            $objWriter->endElement();
+        }
         $objWriter->endElement();
         $objWriter->endElement();
 
@@ -202,7 +213,7 @@ class Chart extends WriterPart
      * @param Axis $xAxis
      * @param Axis $yAxis
      */
-    private function writePlotArea(XMLWriter $objWriter, \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pSheet, PlotArea $plotArea, ?Title $xAxisLabel = null, ?Title $yAxisLabel = null, ?Axis $xAxis = null, ?Axis $yAxis = null, ?GridLines $majorGridlines = null, ?GridLines $minorGridlines = null): void
+    private function writePlotArea(XMLWriter $objWriter, \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pSheet, PlotArea $plotArea, ?Title $xAxisLabel = null, ?Title $yAxisLabel = null, ?Axis $xAxis = null, ?Axis $yAxis = null, ?GridLines $majorGridlines = null, ?GridLines $minorGridlines = null, $holeSize = 50): void
     {
         if ($plotArea === null) {
             return;
@@ -306,7 +317,7 @@ class Chart extends WriterPart
 
                 if ($chartType === DataSeries::TYPE_DONUTCHART) {
                     $objWriter->startElement('c:holeSize');
-                    $objWriter->writeAttribute('val', 50);
+                    $objWriter->writeAttribute('val', $holeSize);
                     $objWriter->endElement();
                 }
             }
@@ -336,6 +347,10 @@ class Chart extends WriterPart
     private function writeDataLabels(XMLWriter $objWriter, ?Layout $chartLayout = null): void
     {
         $objWriter->startElement('c:dLbls');
+
+        if ($chartLayout->getValueColor() || $chartLayout->getValueSize()) {
+            $this->writeTxPr($objWriter, $chartLayout->getValueColor(), $chartLayout->getValueSize());
+        }
 
         $objWriter->startElement('c:showLegendKey');
         $showLegendKey = (empty($chartLayout)) ? 0 : $chartLayout->getShowLegendKey();
@@ -480,8 +495,8 @@ class Chart extends WriterPart
             $objWriter->endElement();
         }
 
-        if (!is_null($yAxis->getAxisValueColor()) || !is_null($yAxis->getAxisValueSize())) {
-            $this->AxisValue($objWriter, $yAxis->getAxisValueColor(), $yAxis->getAxisValueSize());
+        if ($yAxis->getAxisValueColor() || $yAxis->getAxisValueSize()) {
+            $this->writeTxPr($objWriter, $yAxis->getAxisValueColor(), $yAxis->getAxisValueSize());
         }
 
         if ($id2 > 0) {
@@ -965,8 +980,8 @@ class Chart extends WriterPart
         $objWriter->endElement(); //effectList
         $objWriter->endElement(); //end spPr
 
-        if (!is_null($xAxis->getAxisValueColor()) || !is_null($xAxis->getAxisValueSize())) {
-            $this->AxisValue($objWriter, $xAxis->getAxisValueColor(), $xAxis->getAxisValueSize());
+        if ($xAxis->getAxisValueColor() || $xAxis->getAxisValueSize()) {
+            $this->writeTxPr($objWriter, $xAxis->getAxisValueColor(), $xAxis->getAxisValueSize());
         }
 
         if ($id1 > 0) {
@@ -1045,11 +1060,20 @@ class Chart extends WriterPart
      * @param XMLWriter $objWriter XML Writer
      * @param int       $val       value for idx (default: 3)
      * @param string    $fillColor hex color (default: FF9900)
+     * @param bool      $showSeparator  (default: false)
+     * @param int       $separatorWidth width (default: 6350)
+     * @param string    $separatorColor hex color (default: FFFFFFFF)
      *
      * @return XMLWriter XML Writer
      */
-    private function writePlotSeriesValuesElement($objWriter, $val = 3, $fillColor = 'FF9900')
-    {
+    private function writePlotSeriesValuesElement(
+        XMLWriter $objWriter,
+        $val = 3,
+        $fillColor = 'FF9900',
+        $showSeparator = false,
+        $separatorWidth = 6350,
+        $separatorColor = 'FFFFFF'
+    ) {
         $objWriter->startElement('c:dPt');
         $objWriter->startElement('c:idx');
         $objWriter->writeAttribute('val', $val);
@@ -1061,6 +1085,12 @@ class Chart extends WriterPart
 
         $objWriter->startElement('c:spPr');
         $this->writeSolidFill($objWriter, $fillColor);
+        if ($showSeparator) {
+            $objWriter->startElement('a:ln');
+            $objWriter->writeAttribute('w', $separatorWidth);
+            $this->writeSolidFill($objWriter, $separatorColor);
+            $objWriter->endElement();
+        }
         $objWriter->endElement();
         $objWriter->endElement();
 
@@ -1150,10 +1180,15 @@ class Chart extends WriterPart
                 $fillColorValues = $plotSeriesValues->getFillColor();
                 if ($fillColorValues !== null && is_array($fillColorValues)) {
                     foreach ($plotSeriesValues->getDataValues() as $dataKey => $dataValue) {
-                        $this->writePlotSeriesValuesElement($objWriter, $dataKey, ($fillColorValues[$dataKey] ?? 'FF9900'));
+                        $this->writePlotSeriesValuesElement(
+                            $objWriter,
+                            $dataKey,
+                            ($fillColorValues[$dataKey] ?? 'FF9900'),
+                            $plotSeriesValues->isShowSeparator()
+                        );
                     }
                 } else {
-                    $this->writePlotSeriesValuesElement($objWriter);
+                    $this->writePlotSeriesValuesElement($objWriter, 3, 'FF9900', $plotSeriesValues->isShowSeparator());
                 }
             }
 
@@ -1602,7 +1637,7 @@ class Chart extends WriterPart
         $objWriter->endElement();
     }
 
-    private function AxisValue(XMLWriter $objWriter, ?string $color, ?int $size)
+    private function writeTxPr(XMLWriter $objWriter, ?string $color, ?int $size)
     {
         $objWriter->startElement('c:txPr');
 
@@ -1615,12 +1650,17 @@ class Chart extends WriterPart
         $objWriter->startElement('a:p');
         $objWriter->startElement('a:pPr');
         $objWriter->startElement('a:defRPr');
-        $objWriter->writeAttribute('sz', !is_null($size) ? $size : 1000);
-        $objWriter->startElement('a:solidFill');
-        $objWriter->startElement('a:srgbClr');
-        $objWriter->writeAttribute('val', !is_null($color) ? $color : '000000');
-        $objWriter->endElement();
-        $objWriter->endElement();
+        if ($size) {
+            $objWriter->writeAttribute('sz', $size);
+        }
+        if ($color) {
+            $objWriter->startElement('a:solidFill');
+            $objWriter->startElement('a:srgbClr');
+            $objWriter->writeAttribute('val', $color);
+            $objWriter->endElement();
+            $objWriter->endElement();
+        }
+
         $objWriter->endElement();
         $objWriter->endElement();
         $objWriter->endElement();

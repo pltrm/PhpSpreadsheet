@@ -5,6 +5,7 @@ namespace PhpOffice\PhpSpreadsheet\Chart;
 use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
 use PhpOffice\PhpSpreadsheet\Calculation\Functions;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class DataSeriesValues
@@ -79,6 +80,15 @@ class DataSeriesValues
      * @var int
      */
     private $markerSiz = 3;
+
+    /** @var string */
+    private $separatorColor = 'FFFFFF';
+
+    /** @var int  */
+    private $separatorWidth = 6350;
+
+    /** @var bool */
+    private $showSeparator = false;
 
     /**
      * Create a new DataSeriesValues object.
@@ -283,7 +293,7 @@ class DataSeriesValues
      */
     public function setLineWidth($width): DataSeriesValues
     {
-        $minWidth = 12700;
+        $minWidth = 6350;
         $this->lineWidth = max($minWidth, $width);
 
         return $this;
@@ -367,6 +377,60 @@ class DataSeriesValues
         }
 
         return $this->dataValues;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeparatorColor(): string
+    {
+        return $this->separatorColor;
+    }
+
+    /**
+     * @param string $separatorColor
+     * @return self
+     */
+    public function setSeparatorColor(string $separatorColor): self
+    {
+        $this->separatorColor = $separatorColor;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSeparatorWidth(): int
+    {
+        return $this->separatorWidth;
+    }
+
+    /**
+     * @param int $separatorWidth
+     * @return self
+     */
+    public function setSeparatorWidth(int $separatorWidth): self
+    {
+        $this->separatorWidth = $separatorWidth;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowSeparator(): bool
+    {
+        return $this->showSeparator;
+    }
+
+    /**
+     * @param bool $showSeparator
+     * @return self
+     */
+    public function setShowSeparator(bool $showSeparator): self
+    {
+        $this->showSeparator = $showSeparator;
+        return $this;
     }
 
     /**
