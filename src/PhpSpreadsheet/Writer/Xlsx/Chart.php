@@ -1217,7 +1217,8 @@ class Chart extends WriterPart
                 } else {
                     $this->writePlotSeriesValuesElement(
                         $objWriter,
-                        3, $fillColorValues ?: 'FF9900',
+                        3,
+                        $fillColorValues ?: 'FF9900',
                         $plotSeriesValues->isShowSeparator()
                     );
                 }
