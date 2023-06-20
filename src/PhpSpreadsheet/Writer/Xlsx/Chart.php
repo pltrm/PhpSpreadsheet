@@ -1215,7 +1215,11 @@ class Chart extends WriterPart
                         );
                     }
                 } else {
-                    $this->writePlotSeriesValuesElement($objWriter, 3, $fillColorValues, $plotSeriesValues->isShowSeparator());
+                    $this->writePlotSeriesValuesElement(
+                        $objWriter,
+                        3, $fillColorValues ?: 'FF9900',
+                        $plotSeriesValues->isShowSeparator()
+                    );
                 }
             }
 
