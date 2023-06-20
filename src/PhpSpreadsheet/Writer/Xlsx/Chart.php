@@ -1203,7 +1203,6 @@ class Chart extends WriterPart
                 || ($groupType == DataSeries::TYPE_PIECHART_3D)
                 || ($groupType == DataSeries::TYPE_DONUTCHART)
                 || (($groupType == DataSeries::TYPE_BARCHART) && $plotGroupingType != DataSeries::GROUPING_STACKED)
-
             ) {
                 $fillColorValues = $plotSeriesValues->getFillColor();
                 if ($fillColorValues !== null && is_array($fillColorValues)) {
@@ -1216,7 +1215,7 @@ class Chart extends WriterPart
                         );
                     }
                 } else {
-                    $this->writePlotSeriesValuesElement($objWriter, 3, 'FF9900', $plotSeriesValues->isShowSeparator());
+                    $this->writePlotSeriesValuesElement($objWriter, 3, $fillColorValues, $plotSeriesValues->isShowSeparator());
                 }
             }
 
