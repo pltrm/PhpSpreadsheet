@@ -148,6 +148,13 @@ class Chart
     private $holeSize = 50;
 
     /**
+     * ga width
+     *
+     * @var int
+     */
+    private $gapWidth = 150;
+
+    /**
      * Create a new Chart.
      *
      * @param mixed $name
@@ -684,6 +691,24 @@ class Chart
     {
         $this->holeSize = $holeSize;
 
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGapWidth(): int
+    {
+        return $this->gapWidth;
+    }
+
+    /**
+     * @param int $gapWidth
+     * @return self
+     */
+    public function setGapWidth(int $gapWidth): self
+    {
+        $this->gapWidth = $gapWidth;
         return $this;
     }
 }

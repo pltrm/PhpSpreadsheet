@@ -76,7 +76,19 @@ class Chart extends WriterPart
         $objWriter->writeAttribute('val', 0);
         $objWriter->endElement();
 
-        $this->writePlotArea($objWriter, $pChart->getWorksheet(), $pChart->getPlotArea(), $pChart->getXAxisLabel(), $pChart->getYAxisLabel(), $pChart->getChartAxisX(), $pChart->getChartAxisY(), $pChart->getMajorGridlines(), $pChart->getMinorGridlines(), $pChart->getHoleSize());
+        $this->writePlotArea(
+            $objWriter,
+            $pChart->getWorksheet(),
+            $pChart->getPlotArea(),
+            $pChart->getXAxisLabel(),
+            $pChart->getYAxisLabel(),
+            $pChart->getChartAxisX(),
+            $pChart->getChartAxisY(),
+            $pChart->getMajorGridlines(),
+            $pChart->getMinorGridlines(),
+            $pChart->getHoleSize(),
+            $pChart->getGapWidth()
+        );
 
         $this->writeLegend($objWriter, $pChart->getLegend());
 
@@ -213,8 +225,18 @@ class Chart extends WriterPart
      * @param Axis $xAxis
      * @param Axis $yAxis
      */
-    private function writePlotArea(XMLWriter $objWriter, \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pSheet, PlotArea $plotArea, ?Title $xAxisLabel = null, ?Title $yAxisLabel = null, ?Axis $xAxis = null, ?Axis $yAxis = null, ?GridLines $majorGridlines = null, ?GridLines $minorGridlines = null, $holeSize = 50): void
-    {
+    private function writePlotArea(
+        XMLWriter $objWriter, \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pSheet,
+        PlotArea $plotArea,
+        ?Title $xAxisLabel = null,
+        ?Title $yAxisLabel = null,
+        ?Axis $xAxis = null,
+        ?Axis $yAxis = null,
+        ?GridLines $majorGridlines = null,
+        ?GridLines $minorGridlines = null,
+        int $holeSize = 50,
+        int $gapWidth = 150
+    ): void {
         if ($plotArea === null) {
             return;
         }
@@ -264,7 +286,7 @@ class Chart extends WriterPart
                 $objWriter->endElement();
             } elseif (($chartType === DataSeries::TYPE_BARCHART) || ($chartType === DataSeries::TYPE_BARCHART_3D)) {
                 $objWriter->startElement('c:gapWidth');
-                $objWriter->writeAttribute('val', 150);
+                $objWriter->writeAttribute('val', $gapWidth);
                 $objWriter->endElement();
 
                 if ($plotGroupingType == 'percentStacked' || $plotGroupingType == 'stacked') {
@@ -1176,7 +1198,13 @@ class Chart extends WriterPart
                 $objWriter->endElement();
             }
 
-            if (($groupType == DataSeries::TYPE_PIECHART) || ($groupType == DataSeries::TYPE_PIECHART_3D) || ($groupType == DataSeries::TYPE_DONUTCHART)) {
+            if (
+                ($groupType == DataSeries::TYPE_PIECHART)
+                || ($groupType == DataSeries::TYPE_PIECHART_3D)
+                || ($groupType == DataSeries::TYPE_DONUTCHART)
+                || (($groupType == DataSeries::TYPE_BARCHART) && $plotGroupingType != DataSeries::GROUPING_STACKED)
+
+            ) {
                 $fillColorValues = $plotSeriesValues->getFillColor();
                 if ($fillColorValues !== null && is_array($fillColorValues)) {
                     foreach ($plotSeriesValues->getDataValues() as $dataKey => $dataValue) {
