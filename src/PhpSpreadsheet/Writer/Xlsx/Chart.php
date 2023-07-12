@@ -549,6 +549,12 @@ class Chart extends WriterPart
             $objWriter->endElement();
         }
 
+        if ($yAxis->getAxisMajorTimeUnit()) {
+            $objWriter->startElement('c:majorTimeUnit');
+            $objWriter->writeAttribute('val', $yAxis->getAxisMajorTimeUnit());
+            $objWriter->endElement();
+        }
+
         if ($isMultiLevelSeries) {
             $objWriter->startElement('c:noMultiLvlLbl');
             $objWriter->writeAttribute('val', 0);

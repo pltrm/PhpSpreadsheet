@@ -50,6 +50,8 @@ class Axis extends Properties
     private $axisValueColor = null;
     /** @var int|null */
     private $axisValueSize = null;
+    /** @var string|null */
+    private $axisMajorTimeUnit = null;
 
     /**
      * Fill Properties.
@@ -673,4 +675,21 @@ class Axis extends Properties
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getAxisMajorTimeUnit(): ?string
+    {
+        return $this->axisMajorTimeUnit;
+    }
+
+    /**
+     * @param string|null $axisMajorTimeUnit
+     * @return self
+     */
+    public function setAxisMajorTimeUnit(?string $axisMajorTimeUnit): self
+    {
+        $this->axisMajorTimeUnit = $axisMajorTimeUnit;
+        return $this;
+    }
 }
