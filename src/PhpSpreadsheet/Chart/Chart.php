@@ -155,6 +155,20 @@ class Chart
     private $gapWidth = 150;
 
     /**
+     * border area color
+     *
+     * @var string
+     */
+    public $borderAreaColor = '868686';
+
+    /**
+     * border area width
+     *
+     * @var int
+     */
+    public $borderAreaWidth = 9525;
+
+    /**
      * Create a new Chart.
      *
      * @param mixed $name
@@ -709,6 +723,42 @@ class Chart
     public function setGapWidth(int $gapWidth): self
     {
         $this->gapWidth = $gapWidth;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBorderAreaColor(): string
+    {
+        return $this->borderAreaColor;
+    }
+
+    /**
+     * @param string $borderAreaColor
+     * @return self
+     */
+    public function setBorderAreaColor(string $borderAreaColor): self
+    {
+        $this->borderAreaColor = $borderAreaColor;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBorderAreaWidth(): int
+    {
+        return $this->borderAreaWidth;
+    }
+
+    /**
+     * @param int $borderAreaWidth
+     * @return self
+     */
+    public function setBorderAreaWidth(int $borderAreaWidth): self
+    {
+        $this->borderAreaWidth = $borderAreaWidth;
         return $this;
     }
 }

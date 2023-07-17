@@ -106,6 +106,13 @@ class Chart extends WriterPart
 
         $objWriter->endElement();
 
+        $objWriter->startElement('c:spPr');
+        $objWriter->startElement('a:ln');
+        $objWriter->writeAttribute('w', $pChart->getBorderAreaWidth());
+        $this->writeSolidFill($objWriter, $pChart->getBorderAreaColor());
+        $objWriter->endElement();
+        $objWriter->endElement();
+
         $this->writePrintSettings($objWriter);
 
         $objWriter->endElement();
