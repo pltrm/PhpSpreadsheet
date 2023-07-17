@@ -1201,6 +1201,17 @@ class Chart extends WriterPart
             if ($fillColor !== null && !is_array($fillColor) && $groupType == DataSeries::TYPE_BARCHART) {
                 $objWriter->startElement('c:spPr');
                 $this->writeSolidFill($objWriter, $fillColor);
+
+                if (
+                    $plotSeriesValues->isShowSeparator()
+                    && $plotGroupingType == DataSeries::GROUPING_STACKED
+                ) {
+                    $objWriter->startElement('a:ln');
+                    $objWriter->writeAttribute('w', $plotSeriesValues->getSeparatorWidth());
+                    $this->writeSolidFill($objWriter, $plotSeriesValues->getSeparatorColor());
+                    $objWriter->endElement();
+                }
+
                 $objWriter->endElement();
             }
 
