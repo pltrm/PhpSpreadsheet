@@ -108,6 +108,12 @@ class Layout
      */
     private $showLeaderLines;
 
+    /** @var int|null */
+    private $valueSize = null;
+
+    /** @var string|null */
+    private $valueColor = null;
+
     /**
      * Create a new Layout.
      */
@@ -476,6 +482,42 @@ class Layout
     {
         $this->showLeaderLines = $value;
 
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getValueSize(): ?int
+    {
+        return $this->valueSize;
+    }
+
+    /**
+     * @param int|null $valueSize
+     * @return self
+     */
+    public function setValueSize(?int $valueSize): self
+    {
+        $this->valueSize = $valueSize;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getValueColor(): ?string
+    {
+        return $this->valueColor;
+    }
+
+    /**
+     * @param string|null $valueColor
+     * @return self
+     */
+    public function setValueColor(?string $valueColor): self
+    {
+        $this->valueColor = $valueColor;
         return $this;
     }
 }

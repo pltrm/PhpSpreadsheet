@@ -141,6 +141,34 @@ class Chart
     private $bottomRightYOffset = 10;
 
     /**
+     * hole size
+     *
+     * @var int
+     */
+    private $holeSize = 50;
+
+    /**
+     * ga width
+     *
+     * @var int
+     */
+    private $gapWidth = 150;
+
+    /**
+     * border area color
+     *
+     * @var string
+     */
+    public $borderAreaColor = '868686';
+
+    /**
+     * border area width
+     *
+     * @var int
+     */
+    public $borderAreaWidth = 9525;
+
+    /**
      * Create a new Chart.
      *
      * @param mixed $name
@@ -659,5 +687,78 @@ class Chart
         $renderer = new $libraryName($this);
 
         return $renderer->render($outputDestination);
+    }
+
+    /**
+     * @return int
+     */
+    public function getHoleSize(): int
+    {
+        return $this->holeSize;
+    }
+
+    /**
+     * @param int $holeSize
+     * @return self
+     */
+    public function setHoleSize(int $holeSize): self
+    {
+        $this->holeSize = $holeSize;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGapWidth(): int
+    {
+        return $this->gapWidth;
+    }
+
+    /**
+     * @param int $gapWidth
+     * @return self
+     */
+    public function setGapWidth(int $gapWidth): self
+    {
+        $this->gapWidth = $gapWidth;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBorderAreaColor(): string
+    {
+        return $this->borderAreaColor;
+    }
+
+    /**
+     * @param string $borderAreaColor
+     * @return self
+     */
+    public function setBorderAreaColor(string $borderAreaColor): self
+    {
+        $this->borderAreaColor = $borderAreaColor;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBorderAreaWidth(): int
+    {
+        return $this->borderAreaWidth;
+    }
+
+    /**
+     * @param int $borderAreaWidth
+     * @return self
+     */
+    public function setBorderAreaWidth(int $borderAreaWidth): self
+    {
+        $this->borderAreaWidth = $borderAreaWidth;
+        return $this;
     }
 }

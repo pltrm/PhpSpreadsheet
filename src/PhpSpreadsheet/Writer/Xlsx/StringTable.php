@@ -224,6 +224,10 @@ class StringTable extends WriterPart
             $objWriter->writeAttribute('b', ($element->getFont()->getBold() ? 1 : 0));
             // Italic
             $objWriter->writeAttribute('i', ($element->getFont()->getItalic() ? 1 : 0));
+            // Size
+            if ($element->getFont()->getSize()) {
+                $objWriter->writeAttribute('sz', $element->getFont()->getSize() * 100);
+            }
             // Underline
             $underlineType = $element->getFont()->getUnderline();
             switch ($underlineType) {

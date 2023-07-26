@@ -38,6 +38,21 @@ class Axis extends Properties
         'horizontal_crosses_value' => null,
     ];
 
+    /** @var int */
+    private $axisTickLblSkip = null;
+    /** @var bool */
+    private $axisHide = false;
+    /** @var int|null */
+    private $axisWidth = null;
+    /** @var string|null */
+    private $axisColor = null;
+    /** @var string|null */
+    private $axisValueColor = null;
+    /** @var int|null */
+    private $axisValueSize = null;
+    /** @var string|null */
+    private $axisMajorTimeUnit = null;
+
     /**
      * Fill Properties.
      *
@@ -550,5 +565,131 @@ class Axis extends Properties
     public function getSoftEdgesSize()
     {
         return $this->softEdges['size'];
+    }
+
+    /**
+     * @return int
+     */
+    public function getAxisTickLblSkip(): ?int
+    {
+        return $this->axisTickLblSkip;
+    }
+
+    /**
+     * @param int|null $axisTickLblSkip
+     * @return self
+     */
+    public function setAxisTickLblSkip(?int $axisTickLblSkip): self
+    {
+        $this->axisTickLblSkip = $axisTickLblSkip;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAxisHide(): bool
+    {
+        return $this->axisHide;
+    }
+
+    /**
+     * @param bool $axisHide
+     * @return self
+     */
+    public function setAxisHide(bool $axisHide): self
+    {
+        $this->axisHide = $axisHide;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAxisWidth(): ?int
+    {
+        return $this->axisWidth;
+    }
+
+    /**
+     * @param int|null $axisWidth
+     * @return self
+     */
+    public function setAxisWidth(?int $axisWidth): self
+    {
+        $this->axisWidth = $axisWidth;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAxisColor(): ?string
+    {
+        return $this->axisColor;
+    }
+
+    /**
+     * @param string|null $axisColor
+     * @return self
+     */
+    public function setAxisColor(?string $axisColor): self
+    {
+        $this->axisColor = $axisColor;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAxisValueColor(): ?string
+    {
+        return $this->axisValueColor;
+    }
+
+    /**
+     * @param string|null $axisValueColor
+     * @return self
+     */
+    public function setAxisValueColor(?string $axisValueColor): self
+    {
+        $this->axisValueColor = $axisValueColor;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAxisValueSize(): ?int
+    {
+        return $this->axisValueSize;
+    }
+
+    /**
+     * @param int|null $axisValueSize
+     * @return self
+     */
+    public function setAxisValueSize(?int $axisValueSize): self
+    {
+        $this->axisValueSize = $axisValueSize;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAxisMajorTimeUnit(): ?string
+    {
+        return $this->axisMajorTimeUnit;
+    }
+
+    /**
+     * @param string|null $axisMajorTimeUnit
+     * @return self
+     */
+    public function setAxisMajorTimeUnit(?string $axisMajorTimeUnit): self
+    {
+        $this->axisMajorTimeUnit = $axisMajorTimeUnit;
+        return $this;
     }
 }
