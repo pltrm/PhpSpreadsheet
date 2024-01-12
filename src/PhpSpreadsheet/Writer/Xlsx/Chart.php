@@ -1211,7 +1211,7 @@ class Chart extends WriterPart
 
                 if (
                     $plotSeriesValues->isShowSeparator()
-                    && $plotGroupingType == DataSeries::GROUPING_STACKED
+                    && in_array($plotGroupingType, [DataSeries::GROUPING_STACKED, DataSeries::GROUPING_PERCENT_STACKED])
                 ) {
                     $objWriter->startElement('a:ln');
                     $objWriter->writeAttribute('w', $plotSeriesValues->getSeparatorWidth());
@@ -1226,7 +1226,10 @@ class Chart extends WriterPart
                 ($groupType == DataSeries::TYPE_PIECHART)
                 || ($groupType == DataSeries::TYPE_PIECHART_3D)
                 || ($groupType == DataSeries::TYPE_DONUTCHART)
-                || (($groupType == DataSeries::TYPE_BARCHART) && $plotGroupingType != DataSeries::GROUPING_STACKED)
+                || (
+                    ($groupType == DataSeries::TYPE_BARCHART)
+                    && !in_array($plotGroupingType, [DataSeries::GROUPING_STACKED, DataSeries::GROUPING_PERCENT_STACKED])
+                )
             ) {
                 $fillColorValues = $plotSeriesValues->getFillColor();
                 if ($fillColorValues !== null && is_array($fillColorValues)) {
