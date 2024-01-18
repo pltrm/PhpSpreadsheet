@@ -90,6 +90,12 @@ class DataSeriesValues
     /** @var bool */
     private $showSeparator = false;
 
+    /** @var array|null */
+    private $markers = null;
+
+    /** @var array|null */
+    private $lineType = null;
+
     /**
      * Create a new DataSeriesValues object.
      *
@@ -430,6 +436,43 @@ class DataSeriesValues
     public function setShowSeparator(bool $showSeparator): self
     {
         $this->showSeparator = $showSeparator;
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getMarkers(): ?array
+    {
+        return $this->markers;
+    }
+
+    /**
+     * @param array arrayPointMarker
+     * @return self
+     */
+    public function setMarkers(array $markers): self
+    {
+        $this->markers = $markers;
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLineType(): ?array
+    {
+        return $this->lineType;
+    }
+
+    /**
+     * @param array|null $lineType
+     * @return self
+     */
+    public function setLineType(?array $lineType): self
+    {
+        $this->lineType = $lineType;
         return $this;
     }
 
