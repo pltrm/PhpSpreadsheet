@@ -1283,12 +1283,29 @@ class Chart extends WriterPart
                 if ($fillColor !== null && !is_array($fillColor)) {
                     $this->writeSolidFill($objWriter, $fillColor);
                 }
+
+                if (
+                    $plotSeriesValues->getLineType()
+                    && $plotSeriesValues->getLineType()[$plotSeriesIdx]
+                ) {
+                    $objWriter->startElement('a:prstDash');
+                    $objWriter->writeAttribute('val', $plotSeriesValues->getLineType()[$plotSeriesIdx]);
+                    $objWriter->endElement();
+                }
+
                 $objWriter->endElement();
                 $objWriter->endElement();
             }
 
             if ($plotSeriesValues) {
                 $plotSeriesMarker = $plotSeriesValues->getPointMarker();
+                if (
+                    $plotSeriesValues->getMarkers()
+                    && $plotSeriesValues->getMarkers()[$plotSeriesIdx]
+                ) {
+                    $plotSeriesMarker = $plotSeriesValues->getMarkers()[$plotSeriesIdx];
+                }
+
                 $markerSize = $plotSeriesValues->getMarkerSize();
                 if ($plotSeriesMarker) {
                     $objWriter->startElement('c:marker');
